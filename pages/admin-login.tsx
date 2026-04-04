@@ -20,7 +20,8 @@ export default function AdminLoginPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.detail || 'Erreur de connexion');
 
-      if (data.user.email !== 'pauledoux@protonmail.com') {
+      // Vérification du rôle ADMIN
+      if (data.user.role !== 'ADMIN' && data.user.email !== 'pauledoux@protonmail.com') {
         throw new Error('Accès refusé. Cette zone est réservée à l\'administrateur.');
       }
 
