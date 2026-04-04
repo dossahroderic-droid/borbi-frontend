@@ -44,6 +44,9 @@ export const updateSponsoredProduct = (id: string, data: any) =>
 export const deleteSponsoredProduct = (id: string) =>
   adminApi(`/admin/sponsored-products/${id}`, { method: 'DELETE' });
 
+// Produits par défaut (pour sponsoring)
+export const getDefaultProducts = () => adminApi('/products/default');
+
 // Grossistes
 export const getWholesalers = () => adminApi('/admin/wholesalers');
 export const toggleFeatured = (wholesalerId: string) =>
