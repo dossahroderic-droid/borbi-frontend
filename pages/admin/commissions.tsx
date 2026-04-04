@@ -18,7 +18,9 @@ export default function AdminCommissionsPage() {
   const handleCollect = async (id: string) => {
     await markCommissionCollected(id);
     toast.success('Commission marquée comme collectée');
-    setCommissions(prev => prev.map((c: any) => c.id === id ? { ...c, status: 'COLLECTED' } : c));
+    setCommissions((prev) =>
+      prev.map((c: any) => (c.id === id ? { ...c, status: 'COLLECTED' } : c))
+    );
   };
 
   if (loading) return <AdminGuard><AdminLayout><div>Chargement...</div></AdminLayout></AdminGuard>;
