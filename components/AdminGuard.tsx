@@ -14,7 +14,7 @@ export default function AdminGuard({ children }: { children: React.ReactNode }) 
     }
     try {
       const user = JSON.parse(userStr);
-      if (user.email === 'pauledoux@protonmail.com' && user.role === 'ADMIN') {
+      if (user.email === 'pauledoux@protonmail.com' || user.role === 'ADMIN') {
         setIsAdmin(true);
       } else {
         router.push('/admin-login');
