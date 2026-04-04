@@ -22,6 +22,12 @@ export const login = (identifier: string, password: string) =>
 export const register = (data: any) =>
   api('/auth/register', { method: 'POST', body: JSON.stringify(data) });
 
+export const logout = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  window.location.href = '/login';
+};
+
 // Produits
 export const getDefaultProducts = () => api('/products/default');
 export const getVendorProducts = () => api('/vendors/products');
