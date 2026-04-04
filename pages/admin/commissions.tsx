@@ -5,7 +5,7 @@ import { getCommissions, markCommissionCollected } from '@/lib/adminApi';
 import toast from 'react-hot-toast';
 
 export default function AdminCommissionsPage() {
-  const [commissions, setCommissions] = useState([]);
+  const [commissions, setCommissions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -18,7 +18,7 @@ export default function AdminCommissionsPage() {
   const handleCollect = async (id: string) => {
     await markCommissionCollected(id);
     toast.success('Commission marquée comme collectée');
-    setCommissions(commissions.map((c: any) => c.id === id ? { ...c, status: 'COLLECTED' } : c));
+    setCommissions(prev => prev.map((c: any) => c.id === id ? { ...c, status: 'COLLECTED' } : c));
   };
 
   if (loading) return <AdminGuard><AdminLayout><div>Chargement...</div></AdminLayout></AdminGuard>;
