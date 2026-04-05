@@ -11,10 +11,10 @@ export default function Sidebar() {
   };
 
   const menuItems = [
-    { href: '/dashboard', label: 'Dashboard', icon: '📊' },
-    { href: '/stock', label: 'Stock', icon: '📦' },
-    { href: '/clients', label: 'Clients', icon: '👥' },
-    { href: '/orders', label: 'Commandes', icon: '🛒' },
+    { href: '/vendor/dashboard', label: 'Dashboard', icon: '📊' },
+    { href: '/vendor/stock', label: 'Stock', icon: '📦' },
+    { href: '/vendor/clients', label: 'Clients', icon: '👥' },
+    { href: '/vendor/orders', label: 'Commandes', icon: '🛒' },
     { href: '/messages', label: 'Messages', icon: '💬' },
   ];
 
