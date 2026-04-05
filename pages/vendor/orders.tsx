@@ -27,25 +27,41 @@ export default function VendorOrdersPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'PENDING': return 'bg-yellow-100 text-yellow-800';
-      case 'CONFIRMED': return 'bg-blue-100 text-blue-800';
-      case 'DELIVERED': return 'bg-green-100 text-green-800';
-      case 'CANCELLED': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'PENDING':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'CONFIRMED':
+        return 'bg-blue-100 text-blue-800';
+      case 'DELIVERED':
+        return 'bg-green-100 text-green-800';
+      case 'CANCELLED':
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
     }
   };
 
   const getStatusText = (status: string) => {
     switch (status) {
-      case 'PENDING': return t('pending');
-      case 'CONFIRMED': return t('confirmed');
-      case 'DELIVERED': return t('delivered');
-      case 'CANCELLED': return t('cancelled');
-      default: return status;
+      case 'PENDING':
+        return t('pending');
+      case 'CONFIRMED':
+        return t('confirmed');
+      case 'DELIVERED':
+        return t('delivered');
+      case 'CANCELLED':
+        return t('cancelled');
+      default:
+        return status;
     }
   };
 
-  if (loading) return <VendorLayout><div className="p-6">{t('loading')}</div></VendorLayout>;
+  if (loading) {
+    return (
+      <VendorLayout>
+        <div className="p-6">{t('loading')}</div>
+      </VendorLayout>
+    );
+  }
 
   return (
     <VendorLayout>
@@ -87,7 +103,7 @@ export default function VendorOrdersPage() {
           <h2 className="font-semibold">{t('my_orders')}</h2>
           {orders.length === 0 ? (
             <div className="bg-white rounded-lg shadow p-8 text-center text-gray-500">
-              {t('no_orders') || 'Aucune commande pour le moment'}
+              Aucune commande pour le moment
             </div>
           ) : (
             orders.map((order: any) => (
