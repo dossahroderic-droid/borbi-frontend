@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import VendorLayout from '@/components/VendorLayout';
 import VoiceInput from '@/components/VoiceInput';
+import CountryCodeSelect from '@/components/CountryCodeSelect';
 import { createClient } from '@/lib/api';
 import toast from 'react-hot-toast';
 
 export default function NewClientPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [countryCode, setCountryCode] = useState('+221');
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -22,9 +24,10 @@ export default function NewClientPage() {
       toast.error('Vous devez obtenir le consentement du client');
       return;
     }
+    const fullPhone = countryCode + formData.phone.replace(/\s/g, '');
     setLoading(true);
     try {
-      await createClient(formData);
+      await createClient({ ...formData, phone: fullPhone });
       toast.success('Client créé');
       router.push('/vendor/clients');
     } catch (error) {
@@ -55,11 +58,13 @@ export default function NewClientPage() {
           <div className="mb-4">
             <label className="block text-gray-700 mb-2">Téléphone</label>
             <div className="flex gap-2">
+              <CountryCodeSelect value={countryCode} onChange={setCountryCode} />
               <input
                 type="tel"
                 className="flex-1 p-2 border rounded"
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                placeholder="77 000 00 00"
                 required
               />
               <VoiceInput onTranscript={(text) => setFormData({ ...formData, phone: text })} buttonText="🎤" />
