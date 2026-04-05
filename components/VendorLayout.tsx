@@ -2,6 +2,7 @@ import VendorSidebar from './VendorSidebar';
 import OnlineStatus from './OnlineStatus';
 import LanguageSwitcher from './LanguageSwitcher';
 import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
 
 export default function VendorLayout({ children }: { children: React.ReactNode }) {
   const { t } = useTranslation('common');
