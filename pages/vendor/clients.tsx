@@ -1,10 +1,14 @@
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import VendorLayout from '@/components/VendorLayout';
 import { getClients, api } from '@/lib/api';
+import { useTranslation } from '@/hooks/useTranslation';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
 
 export default function VendorClientsPage() {
+  const { t } = useTranslation();
+  const router = useRouter();
   const [clients, setClients] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -16,7 +20,7 @@ export default function VendorClientsPage() {
       const data = await getClients();
       setClients(data);
     } catch (error) {
-      toast.error('Erreur chargement clients');
+      toast.error(t('error'));
     } finally {
       setLoading(false);
     }
@@ -33,21 +37,21 @@ export default function VendorClientsPage() {
         method: 'POST',
         body: JSON.stringify({ amountCents: paymentAmount * 100 }),
       });
-      toast.success('Paiement enregistré');
+      toast.success(t('success'));
       setPaymentClient(null);
       setPaymentAmount(0);
       loadClients();
     } catch (error) {
-      toast.error('Erreur paiement');
+      toast.error(t('error'));
     }
   };
 
   const handleSendSms = async (clientId: string) => {
     try {
       await api(`/vendors/clients/${clientId}/send-sms`, { method: 'POST' });
-      toast.success('SMS envoyé');
+      toast.success(t('success'));
     } catch (error) {
-      toast.error('Erreur envoi SMS');
+      toast.error(t('error'));
     }
   };
 
@@ -56,21 +60,21 @@ export default function VendorClientsPage() {
     c.phone.includes(search)
   );
 
-  if (loading) return <VendorLayout><div>Chargement...</div></VendorLayout>;
+  if (loading) return <VendorLayout><div className="p-6">{t('loading')}</div></VendorLayout>;
 
   return (
     <VendorLayout>
       <div className="space-y-6">
         <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Clients</h1>
+          <h1 className="text-2xl font-bold">{t('clients')}</h1>
           <Link href="/vendor/clients/new" className="bg-primary text-white px-4 py-2 rounded-lg">
-            + Nouveau client
+            + {t('new_client')}
           </Link>
         </div>
 
         <input
           type="text"
-          placeholder="Rechercher par nom ou téléphone..."
+          placeholder={t('search')}
           className="w-full p-2 border rounded"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -80,10 +84,10 @@ export default function VendorClientsPage() {
           <table className="w-full">
             <thead className="bg-gray-50">
               <tr>
-                <th className="p-3 text-left">Nom</th>
-                <th className="p-3 text-left">Téléphone</th>
-                <th className="p-3 text-left">Dette</th>
-                <th className="p-3 text-left">Actions</th>
+                <th className="p-3 text-left">{t('name')}</th>
+                <th className="p-3 text-left">{t('phone')}</th>
+                <th className="p-3 text-left">{t('debt')}</th>
+                <th className="p-3 text-left">{t('actions')}</th>
               </tr>
             </thead>
             <tbody>
@@ -96,10 +100,10 @@ export default function VendorClientsPage() {
                       {c.debtBalance / 100} FCFA
                     </span>
                   </td>
-                  <td className="p-3 flex gap-2">
-                    <Link href={`/vendor/client/${c.id}`} className="text-primary hover:underline text-sm">Voir</Link>
-                    <button onClick={() => setPaymentClient(c)} className="text-green-600 hover:underline text-sm">Paiement</button>
-                    <button onClick={() => handleSendSms(c.id)} className="text-blue-600 hover:underline text-sm">SMS</button>
+                  <td className="p-3 flex gap-2 flex-wrap">
+                    <Link href={`/vendor/client/detail?id=${c.id}`} className="text-primary hover:underline text-sm">{t('view_details')}</Link>
+                    <button onClick={() => setPaymentClient(c)} className="text-green-600 hover:underline text-sm">{t('payment')}</button>
+                    <button onClick={() => handleSendSms(c.id)} className="text-blue-600 hover:underline text-sm">{t('send_sms')}</button>
                   </td>
                 </tr>
               ))}
@@ -108,23 +112,22 @@ export default function VendorClientsPage() {
         </div>
       </div>
 
-      {/* Modal paiement */}
       {paymentClient && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <h2 className="text-xl font-bold mb-4">Enregistrer un paiement</h2>
-            <p>Client : {paymentClient.name}</p>
-            <p>Dette actuelle : {paymentClient.debtBalance / 100} FCFA</p>
+            <h2 className="text-xl font-bold mb-4">{t('payment')}</h2>
+            <p>{t('client')} : {paymentClient.name}</p>
+            <p>{t('debt')} : {paymentClient.debtBalance / 100} FCFA</p>
             <input
               type="number"
-              placeholder="Montant (FCFA)"
+              placeholder={t('amount')}
               className="w-full p-2 border rounded my-4"
               value={paymentAmount}
               onChange={(e) => setPaymentAmount(parseInt(e.target.value) || 0)}
             />
             <div className="flex gap-3">
-              <button onClick={handlePayment} className="flex-1 bg-primary text-white py-2 rounded">Enregistrer</button>
-              <button onClick={() => setPaymentClient(null)} className="flex-1 bg-gray-300 py-2 rounded">Annuler</button>
+              <button onClick={handlePayment} className="flex-1 bg-primary text-white py-2 rounded">{t('save')}</button>
+              <button onClick={() => setPaymentClient(null)} className="flex-1 bg-gray-300 py-2 rounded">{t('cancel')}</button>
             </div>
           </div>
         </div>
