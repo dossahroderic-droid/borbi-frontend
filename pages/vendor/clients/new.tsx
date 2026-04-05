@@ -1,14 +1,14 @@
 import { useState } from 'react';
-import { useTranslation } from 'next-i18next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useRouter } from 'next/router';
 import VendorLayout from '@/components/VendorLayout';
 import VoiceInput from '@/components/VoiceInput';
 import CountryCodeSelect from '@/components/CountryCodeSelect';
 import { createClient } from '@/lib/api';
+import { useTranslation } from '@/hooks/useTranslation';
 import toast from 'react-hot-toast';
 
 export default function NewClientPage() {
-  const { t } = useTranslation('common');
+  const { t } = useTranslation();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [countryCode, setCountryCode] = useState('+221');
@@ -23,17 +23,17 @@ export default function NewClientPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.consentGiven) {
-      toast.error(t('consent'));
+      toast.error('Vous devez obtenir le consentement du client');
       return;
     }
     const fullPhone = countryCode + formData.phone.replace(/\s/g, '');
     setLoading(true);
     try {
       await createClient({ ...formData, phone: fullPhone });
-      toast.success(t('success'));
+      toast.success('Client créé');
       router.push('/vendor/clients');
     } catch (error) {
-      toast.error(t('error'));
+      toast.error('Erreur création client');
     } finally {
       setLoading(false);
     }
@@ -115,12 +115,4 @@ export default function NewClientPage() {
       </div>
     </VendorLayout>
   );
-}
-
-export async function getStaticProps({ locale }: { locale: string }) {
-  return {
-    props: {
-      ...(await serverSideTranslations(locale, ['common'])),
-    },
-  };
 }
