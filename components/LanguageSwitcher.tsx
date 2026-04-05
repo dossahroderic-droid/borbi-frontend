@@ -1,10 +1,8 @@
 import { useRouter } from 'next/router';
-import { useTranslation } from 'next-i18next';
 
 export default function LanguageSwitcher() {
   const router = useRouter();
   const { pathname, asPath, query, locale } = router;
-  const { t } = useTranslation('common');
 
   const changeLanguage = (newLocale: string) => {
     router.push({ pathname, query }, asPath, { locale: newLocale });
@@ -14,7 +12,7 @@ export default function LanguageSwitcher() {
     { code: 'fr', name: 'Français', flag: '🇫🇷' },
     { code: 'en', name: 'English', flag: '🇬🇧' },
     { code: 'wo', name: 'Wolof', flag: '🇸🇳' },
-    { code: 'ar', name: 'العربية', flag: '🇸🇦', dir: 'rtl' },
+    { code: 'ar', name: 'العربية', flag: '🇸🇦' },
   ];
 
   return (
