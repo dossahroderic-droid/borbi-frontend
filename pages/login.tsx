@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import toast from 'react-hot-toast';
 
 export default function LoginPage() {
@@ -30,11 +31,6 @@ export default function LoginPage() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleForgotPassword = () => {
-    toast.success('Lien de réinitialisation envoyé (démo)');
-    // TODO: Implémenter la vraie réinitialisation
   };
 
   return (
@@ -70,13 +66,9 @@ export default function LoginPage() {
             </button>
           </div>
           <div className="text-right mb-6">
-            <button
-              type="button"
-              onClick={handleForgotPassword}
-              className="text-sm text-primary hover:underline"
-            >
+            <Link href="/forgot-password" className="text-sm text-primary hover:underline">
               Mot de passe oublié ?
-            </button>
+            </Link>
           </div>
           <button
             type="submit"
@@ -88,7 +80,7 @@ export default function LoginPage() {
         </form>
         <p className="text-center text-gray-500 mt-4">
           Pas encore de compte ?{' '}
-          <a href="/register" className="text-primary">S'inscrire</a>
+          <Link href="/register" className="text-primary">S'inscrire</Link>
         </p>
       </div>
     </div>
