@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
+import CountryCodeSelect from '@/components/CountryCodeSelect';
 
 export default function RegisterPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [countryCode, setCountryCode] = useState('+221');
   const [formData, setFormData] = useState({
     email: '',
     phone: '',
@@ -22,12 +24,13 @@ export default function RegisterPage() {
       toast.error('Vous devez accepter les conditions générales');
       return;
     }
+    const fullPhone = countryCode + formData.phone.replace(/\s/g, '');
     setLoading(true);
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, phone: fullPhone }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.detail || 'Erreur lors de l\'inscription');
@@ -59,12 +62,17 @@ export default function RegisterPage() {
           </div>
           <div className="mb-4">
             <label className="block text-gray-700 mb-2">Téléphone</label>
-            <input
-              type="tel"
-              value={formData.phone}
-              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              className="w-full p-3 border rounded-lg"
-            />
+            <div className="flex gap-2">
+              <CountryCodeSelect value={countryCode} onChange={setCountryCode} />
+              <input
+                type="tel"
+                value={formData.phone}
+                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                className="flex-1 p-3 border rounded-lg"
+                placeholder="77 000 00 00"
+                required
+              />
+            </div>
           </div>
           <div className="relative mb-4">
             <label className="block text-gray-700 mb-2">Mot de passe</label>
@@ -96,7 +104,6 @@ export default function RegisterPage() {
             </select>
           </div>
 
-          {/* Case à cocher CGU */}
           <div className="mb-3">
             <label className="flex items-start gap-2">
               <input
@@ -118,7 +125,6 @@ export default function RegisterPage() {
             </label>
           </div>
 
-          {/* Case à cocher SMS (optionnelle) */}
           <div className="mb-6">
             <label className="flex items-start gap-2">
               <input
