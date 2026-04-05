@@ -110,7 +110,6 @@ export default function VendorStockPage() {
           </button>
         </div>
 
-        {/* Filtres */}
         <div className="flex gap-4">
           <input
             type="text"
@@ -135,7 +134,6 @@ export default function VendorStockPage() {
           </select>
         </div>
 
-        {/* Tableau produits */}
         <div className="overflow-x-auto bg-white rounded-lg shadow">
           <table className="w-full">
             <thead className="bg-gray-50">
@@ -180,13 +178,13 @@ export default function VendorStockPage() {
                   </td>
                   <td className="p-3">
                     <button onClick={() => handleRemove(p.id)} className="text-red-600 hover:underline text-sm">Retirer</button>
-                  </tr>
+                  </td>
+                </tr>
               ))}
             </tbody>
           </table>
         </div>
 
-        {/* Modal ajout produit */}
         {showModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg p-6 w-full max-w-md">
