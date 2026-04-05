@@ -1,19 +1,27 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import toast from 'react-hot-toast';
 
 export default function RegisterPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     phone: '',
     password: '',
     role: 'VENDOR',
+    acceptCgu: false,
+    acceptSms: false,
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.acceptCgu) {
+      toast.error('Vous devez accepter les conditions générales');
+      return;
+    }
     setLoading(true);
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, {
@@ -36,7 +44,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-8">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
         <h1 className="text-2xl font-bold text-center text-primary mb-6">Créer un compte</h1>
         <form onSubmit={handleSubmit}>
@@ -58,17 +66,25 @@ export default function RegisterPage() {
               className="w-full p-3 border rounded-lg"
             />
           </div>
-          <div className="mb-4">
+          <div className="relative mb-4">
             <label className="block text-gray-700 mb-2">Mot de passe</label>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              className="w-full p-3 border rounded-lg"
+              className="w-full p-3 border rounded-lg pr-12"
               required
+              minLength={6}
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 bottom-3 text-gray-500 text-xl"
+            >
+              {showPassword ? "🙈" : "👁️"}
+            </button>
           </div>
-          <div className="mb-6">
+          <div className="mb-4">
             <label className="block text-gray-700 mb-2">Type de compte</label>
             <select
               value={formData.role}
@@ -79,6 +95,44 @@ export default function RegisterPage() {
               <option value="WHOLESALER">Grossiste</option>
             </select>
           </div>
+
+          {/* Case à cocher CGU */}
+          <div className="mb-3">
+            <label className="flex items-start gap-2">
+              <input
+                type="checkbox"
+                checked={formData.acceptCgu}
+                onChange={(e) => setFormData({ ...formData, acceptCgu: e.target.checked })}
+                className="mt-1"
+              />
+              <span className="text-sm text-gray-700">
+                J'accepte les{" "}
+                <Link href="/legal" className="text-primary hover:underline" target="_blank">
+                  conditions générales d'utilisation
+                </Link>{" "}
+                et la{" "}
+                <Link href="/privacy" className="text-primary hover:underline" target="_blank">
+                  politique de confidentialité
+                </Link>
+              </span>
+            </label>
+          </div>
+
+          {/* Case à cocher SMS (optionnelle) */}
+          <div className="mb-6">
+            <label className="flex items-start gap-2">
+              <input
+                type="checkbox"
+                checked={formData.acceptSms}
+                onChange={(e) => setFormData({ ...formData, acceptSms: e.target.checked })}
+                className="mt-1"
+              />
+              <span className="text-sm text-gray-700">
+                Je souhaite recevoir des SMS de relance pour mes dettes
+              </span>
+            </label>
+          </div>
+
           <button
             type="submit"
             disabled={loading}
@@ -89,7 +143,7 @@ export default function RegisterPage() {
         </form>
         <p className="text-center text-gray-500 mt-4">
           Déjà un compte ?{' '}
-          <a href="/login" className="text-primary">Se connecter</a>
+          <Link href="/login" className="text-primary">Se connecter</Link>
         </p>
       </div>
     </div>
