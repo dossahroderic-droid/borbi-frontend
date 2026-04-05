@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import VendorLayout from '@/components/VendorLayout';
+import VoiceInput from '@/components/VoiceInput';
 import { createClient } from '@/lib/api';
 import toast from 'react-hot-toast';
 
@@ -40,23 +41,29 @@ export default function NewClientPage() {
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-gray-700 mb-2">Nom complet</label>
-            <input
-              type="text"
-              className="w-full p-2 border rounded"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              required
-            />
+            <div className="flex gap-2">
+              <input
+                type="text"
+                className="flex-1 p-2 border rounded"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                required
+              />
+              <VoiceInput onTranscript={(text) => setFormData({ ...formData, name: text })} buttonText="🎤" />
+            </div>
           </div>
           <div className="mb-4">
             <label className="block text-gray-700 mb-2">Téléphone</label>
-            <input
-              type="tel"
-              className="w-full p-2 border rounded"
-              value={formData.phone}
-              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              required
-            />
+            <div className="flex gap-2">
+              <input
+                type="tel"
+                className="flex-1 p-2 border rounded"
+                value={formData.phone}
+                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                required
+              />
+              <VoiceInput onTranscript={(text) => setFormData({ ...formData, phone: text })} buttonText="🎤" />
+            </div>
           </div>
           <div className="mb-4">
             <label className="block text-gray-700 mb-2">Email (optionnel)</label>
@@ -86,7 +93,10 @@ export default function NewClientPage() {
                 checked={formData.consentGiven}
                 onChange={(e) => setFormData({ ...formData, consentGiven: e.target.checked })}
               />
-              <span className="text-sm">J'atteste avoir informé le client de l'utilisation de ses données personnelles</span>
+              <span className="text-sm">
+                J'atteste avoir informé le client de l'utilisation de ses données personnelles
+                et de la possibilité de recevoir des SMS de relance.
+              </span>
             </label>
           </div>
           <button
