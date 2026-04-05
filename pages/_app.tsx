@@ -1,12 +1,15 @@
-import type { AppProps } from 'next/app'
-import { Toaster } from 'react-hot-toast'
-import '../styles/globals.css'
+import type { AppProps } from 'next/app';
+import { appWithTranslation } from 'next-i18next';
+import { Toaster } from 'react-hot-toast';
+import '../styles/globals.css';
 
-export default function App({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Toaster position="top-right" />
       <Component {...pageProps} />
     </>
-  )
+  );
 }
+
+export default appWithTranslation(App);
