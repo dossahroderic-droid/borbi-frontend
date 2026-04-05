@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { useRouter } from 'next/router';
+import { useTranslation } from 'next-i18next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import VendorLayout from '@/components/VendorLayout';
 import VoiceInput from '@/components/VoiceInput';
 import CountryCodeSelect from '@/components/CountryCodeSelect';
@@ -7,6 +8,7 @@ import { createClient } from '@/lib/api';
 import toast from 'react-hot-toast';
 
 export default function NewClientPage() {
+  const { t } = useTranslation('common');
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [countryCode, setCountryCode] = useState('+221');
@@ -21,17 +23,17 @@ export default function NewClientPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.consentGiven) {
-      toast.error('Vous devez obtenir le consentement du client');
+      toast.error(t('consent'));
       return;
     }
     const fullPhone = countryCode + formData.phone.replace(/\s/g, '');
     setLoading(true);
     try {
       await createClient({ ...formData, phone: fullPhone });
-      toast.success('Client créé');
+      toast.success(t('success'));
       router.push('/vendor/clients');
     } catch (error) {
-      toast.error('Erreur création client');
+      toast.error(t('error'));
     } finally {
       setLoading(false);
     }
@@ -40,10 +42,10 @@ export default function NewClientPage() {
   return (
     <VendorLayout>
       <div className="max-w-md mx-auto bg-white rounded-lg shadow p-6">
-        <h1 className="text-2xl font-bold mb-6">Nouveau client</h1>
+        <h1 className="text-2xl font-bold mb-6">{t('new_client')}</h1>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Nom complet</label>
+            <label className="block text-gray-700 mb-2">{t('name')}</label>
             <div className="flex gap-2">
               <input
                 type="text"
@@ -56,7 +58,7 @@ export default function NewClientPage() {
             </div>
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Téléphone</label>
+            <label className="block text-gray-700 mb-2">{t('phone')}</label>
             <div className="flex gap-2">
               <CountryCodeSelect value={countryCode} onChange={setCountryCode} />
               <input
@@ -71,7 +73,7 @@ export default function NewClientPage() {
             </div>
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Email (optionnel)</label>
+            <label className="block text-gray-700 mb-2">{t('email')}</label>
             <input
               type="email"
               className="w-full p-2 border rounded"
@@ -80,7 +82,7 @@ export default function NewClientPage() {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Langue préférée</label>
+            <label className="block text-gray-700 mb-2">{t('language')}</label>
             <select
               className="w-full p-2 border rounded"
               value={formData.preferredLanguage}
@@ -88,7 +90,8 @@ export default function NewClientPage() {
             >
               <option value="fr">Français</option>
               <option value="wo">Wolof</option>
-              <option value="ar">Arabe</option>
+              <option value="en">English</option>
+              <option value="ar">العربية</option>
             </select>
           </div>
           <div className="mb-6">
@@ -98,10 +101,7 @@ export default function NewClientPage() {
                 checked={formData.consentGiven}
                 onChange={(e) => setFormData({ ...formData, consentGiven: e.target.checked })}
               />
-              <span className="text-sm">
-                J'atteste avoir informé le client de l'utilisation de ses données personnelles
-                et de la possibilité de recevoir des SMS de relance.
-              </span>
+              <span className="text-sm">{t('consent')}</span>
             </label>
           </div>
           <button
@@ -109,10 +109,18 @@ export default function NewClientPage() {
             disabled={loading}
             className="w-full bg-primary text-white py-2 rounded font-semibold disabled:opacity-50"
           >
-            {loading ? 'Création...' : 'Créer le client'}
+            {loading ? t('loading') : t('create')}
           </button>
         </form>
       </div>
     </VendorLayout>
   );
+}
+
+export async function getStaticProps({ locale }: { locale: string }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    },
+  };
 }
