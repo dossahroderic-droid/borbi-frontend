@@ -1,16 +1,10 @@
 import VendorSidebar from './VendorSidebar';
 import OnlineStatus from './OnlineStatus';
 import LanguageSwitcher from './LanguageSwitcher';
-import { useTranslation } from 'next-i18next';
-import { useRouter } from 'next/router';
 
 export default function VendorLayout({ children }: { children: React.ReactNode }) {
-  const { t } = useTranslation('common');
-  const router = useRouter();
-  const isRtl = router.locale === 'ar';
-
   return (
-    <div dir={isRtl ? 'rtl' : 'ltr'} className="flex min-h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-gray-100">
       <VendorSidebar />
       <div className="flex-1 ml-64">
         <div className="bg-white border-b p-4 flex justify-end items-center gap-4">
