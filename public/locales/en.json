@@ -1,1 +1,22 @@
-
+{
+  "dashboard": "Dashboard",
+  "stock": "Stock",
+  "clients": "Clients",
+  "orders": "Wholesale orders",
+  "messages": "Messages",
+  "logout": "Logout",
+  "new_sale": "New sale",
+  "sales_today": "Today's sales",
+  "total_debts": "Total debts",
+  "active_products": "Active products",
+  "low_stock": "Low stock",
+  "new_client": "New client",
+  "name": "Full name",
+  "phone": "Phone",
+  "email": "Email",
+  "create": "Create",
+  "cancel": "Cancel",
+  "confirm_sale": "Confirm sale",
+  "search": "Search",
+  "add_product": "Add product"
+}
