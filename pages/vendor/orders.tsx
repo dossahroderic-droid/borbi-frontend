@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import VendorLayout from '@/components/VendorLayout';
 import { api } from '@/lib/api';
 import toast from 'react-hot-toast';
+import Link from 'next/link';
 
 export default function VendorOrdersPage() {
   const [orders, setOrders] = useState([]);
@@ -11,14 +12,14 @@ export default function VendorOrdersPage() {
 
   useEffect(() => {
     Promise.all([
-      api('/orders/vendor'),
-      api('/wholesalers')
+      api('/orders/vendor').catch(() => []),
+      api('/wholesalers').catch(() => [])
     ])
       .then(([ordersData, wholesalersData]) => {
-        setOrders(ordersData);
-        setWholesalers(wholesalersData);
+        setOrders(ordersData || []);
+        setWholesalers(wholesalersData || []);
       })
-      .catch(err => toast.error('Erreur chargement'))
+      .catch(err => console.error(err))
       .finally(() => setLoading(false));
   }, []);
 
@@ -46,18 +47,18 @@ export default function VendorOrdersPage() {
                 </option>
               ))}
             </select>
-            <button
-              onClick={() => {
-                if (selectedWholesaler) {
-                  window.location.href = `/vendor/order/new?wholesalerId=${selectedWholesaler}`;
-                } else {
+            <Link
+              href={selectedWholesaler ? `/vendor/order/new?wholesalerId=${selectedWholesaler}` : '#'}
+              className={`bg-primary text-white px-4 py-2 rounded text-center ${!selectedWholesaler ? 'opacity-50 cursor-not-allowed' : ''}`}
+              onClick={(e) => {
+                if (!selectedWholesaler) {
+                  e.preventDefault();
                   toast.error('Sélectionnez un grossiste');
                 }
               }}
-              className="bg-primary text-white px-4 py-2 rounded"
             >
               Commander
-            </button>
+            </Link>
           </div>
         </div>
 
