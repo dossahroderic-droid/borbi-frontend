@@ -13,8 +13,8 @@ const C = {
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://borbi-backend.onrender.com/api";
 
-// Composant d'affichage d'image
-const ProductImage = ({ imageUrl, emoji = "📦", width = 120, height = 120 }) => {
+// Composant d'affichage d'image (avec types)
+const ProductImage = ({ imageUrl, emoji = "📦", width = 120, height = 120 }: { imageUrl?: string; emoji?: string; width?: number; height?: number }) => {
   const [src, setSrc] = useState("");
   useEffect(() => {
     if (imageUrl) setSrc(imageUrl);
@@ -31,7 +31,7 @@ const ProductImage = ({ imageUrl, emoji = "📦", width = 120, height = 120 }) =
 };
 
 // Uploader vers Cloudinary via backend
-const uploadToCloudinary = async (file) => {
+const uploadToCloudinary = async (file: File) => {
   const formData = new FormData();
   formData.append("file", file);
   const token = localStorage.getItem("token");
@@ -46,16 +46,16 @@ const uploadToCloudinary = async (file) => {
 };
 
 // Composant d'upload d'image
-const ImageUploader = ({ onUploaded, currentUrl, label }) => {
+const ImageUploader = ({ onUploaded, currentUrl, label }: { onUploaded: (result: { url: string; publicId: string }) => void; currentUrl?: string; label?: string }) => {
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState(currentUrl || "");
-  const inputRef = useRef();
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleFile = async (file) => {
+  const handleFile = async (file: File) => {
     if (!file || !file.type.startsWith("image/")) return;
     setUploading(true);
     const reader = new FileReader();
-    reader.onload = (e) => setPreview(e.target.result);
+    reader.onload = (e) => setPreview(e.target?.result as string);
     reader.readAsDataURL(file);
     try {
       const result = await uploadToCloudinary(file);
@@ -96,17 +96,17 @@ const ImageUploader = ({ onUploaded, currentUrl, label }) => {
           </div>
         )}
       </div>
-      <input ref={inputRef} type="file" accept="image/*" style={{ display: "none" }} onChange={(e) => handleFile(e.target.files[0])} />
+      <input ref={inputRef} type="file" accept="image/*" style={{ display: "none" }} onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])} />
     </div>
   );
 };
 
 // Page principale
 export default function BorBiImages() {
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [editing, setEditing] = useState(null);
+  const [editing, setEditing] = useState<any>(null);
 
   const loadProducts = useCallback(async () => {
     try {
@@ -124,7 +124,7 @@ export default function BorBiImages() {
     loadProducts();
   }, [loadProducts]);
 
-  const updateProductImage = async (product, result) => {
+  const updateProductImage = async (product: any, result: { url: string; publicId: string }) => {
     // Ici, vous pouvez ajouter une route pour mettre à jour l'URL de l'image dans MongoDB
     // Pour l'instant, on met juste à jour l'état local
     setProducts((prev) =>
